@@ -7,7 +7,9 @@ ARG API_URI
 ENV API_URI ${API_URI:-http://localhost:8000/graphql/}
 RUN API_URI=${API_URI} npm run build
 
-FROM nginx:stable
+FROM node:10-alpine
 WORKDIR /app
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+RUN npm install --global http-server
 COPY --from=builder /app/dist/ /app/
+
+CMD ["http-server", "/app"]
